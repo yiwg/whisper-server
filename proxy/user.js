@@ -1,3 +1,4 @@
+
 var models  = require('../models');
 var User    = models.User;
 var utility = require('utility');
@@ -69,6 +70,15 @@ exports.getUsersByIds = function (ids, callback) {
   User.find({'_id': {'$in': ids}}, callback);
 };
 
+/*
+*@param:
+*@description:通过openid搜索
+*@param:2017/3/18
+*@author：yiweiguo
+*/
+exports.getUsersByOpenId = function (id, callback) {
+  User.findOne({'openId': id}, callback);
+};
 /**
  * 根据关键字，获取一组用户
  * Callback:
@@ -94,19 +104,61 @@ exports.getUsersByQuery = function (query, opt, callback) {
 exports.getUserByNameAndKey = function (loginname, key, callback) {
   User.findOne({loginname: loginname, retrieve_key: key}, callback);
 };
+/*
+*@param:根据sessionid获取用户
+*@description:
+*@param:2017/3/18
+*@author：yiweiguo
+*/
+exports.getUserBySessionId = function (sessionId, callback) {
+  User.findOne({sessionId: sessionId}, callback);
+};
 
-exports.newAndSave = function (name, loginname, pass, email, avatar_url, active, callback) {
-  var user         = new User();
-  user.name        = loginname;
-  user.loginname   = loginname;
-  user.pass        = pass;
-  user.email       = email;
-  user.avatar      = avatar_url;
-  user.active      = active || false;
-  user.accessToken = uuid.v4();
-
+exports.newAndSave = function (nickName, gender, language, city, province, country,avatarUrl,openId,SessionId, callback) {
+  var user      = new User();
+  user.nickName = nickName;
+  user.gender   = gender;
+  user.language = language;
+  user.city     = city;
+  user.province = province;
+  user.country  = country;
+  user.avatarUrl= avatarUrl;
+  user.openId   = openId;
+  user.sessionId= SessionId;
   user.save(callback);
 };
+
+/*
+*@param:
+*@description:更新sessionId或者新建用户
+*@param:2017/3/18
+*@author：yiweiguo
+*/
+exports.updateOrSave=function (nickName, gender, language, city, province, country,avatarUrl,openId,sessionId,callback) {
+    this.getUsersByOpenId(openId,function (err,user) {
+      if(err){
+        console.log(err)
+      }
+      else {
+        if(user){
+          user.sessionId=sessionId;
+        }
+        else{
+          var user      = new User();
+          user.nickName = nickName;
+          user.gender   = gender;
+          user.language = language;
+          user.city     = city;
+          user.province = province;
+          user.country  = country;
+          user.avatarUrl= avatarUrl;
+          user.openId   = openId;
+          user.sessionId= sessionId;
+        }
+        user.save(callback)
+      }
+    })
+}
 
 var makeGravatar = function (email) {
   return 'http://www.gravatar.com/avatar/' + utility.md5(email.toLowerCase()) + '?size=48';

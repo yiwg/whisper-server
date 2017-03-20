@@ -6,15 +6,15 @@ var utility   = require('utility');
 var _ = require('lodash');
 
 var UserSchema = new Schema({
-  name: { type: String},
-  loginname: { type: String},
-  pass: { type: String },
-  email: { type: String},
-  url: { type: String },
-  profile_image_url: {type: String},
-  location: { type: String },
-  signature: { type: String },
-  profile: { type: String },
+  nickName: { type: String},
+  gender: { type: String},
+  language: { type: String },
+  city: { type: String},
+  province: { type: String },
+  country: {type: String},
+  avatarUrl: { type: String },
+  openId: { type: String },
+  sessionId: { type: String },
   weibo: { type: String },
   avatar: { type: String },
   githubId: { type: String},
@@ -70,11 +70,8 @@ UserSchema.virtual('isAdvanced').get(function () {
   return this.score > 700 || this.is_star;
 });
 
-UserSchema.index({loginname: 1}, {unique: true});
-UserSchema.index({email: 1}, {unique: true});
-UserSchema.index({score: -1});
-UserSchema.index({githubId: 1});
-UserSchema.index({accessToken: 1});
+UserSchema.index({openId: 1}, {unique: true});
+UserSchema.index({sessionId: 1}, {unique: true});
 
 UserSchema.pre('save', function(next){
   var now = new Date();
