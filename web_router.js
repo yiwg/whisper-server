@@ -24,11 +24,12 @@ var search = require('./controllers/search');
 var passport = require('passport');
 var configMiddleware = require('./middlewares/conf');
 var config = require('./config');
+var whisper=require('./controllers/whisper')
 
 var router = express.Router();
 
 router.get('/user/login', user.login);
-
+router.get('/whisper/sendSms', whisper.sendSms);
 
 // home page
 /*router.get('/', site.index);

@@ -30,7 +30,7 @@ exports.login = function (req, res, next) {
         if(err){
           console.log(err);
         }
-        res.status(200).jsonp({ sessionId: sessionId,success:true})
+        res.status(200).jsonp({ openId: openId,success:true})
         console.log('用户会话创建成功.['+userInfo.nickName+","+sessionId+']')
   });
   
